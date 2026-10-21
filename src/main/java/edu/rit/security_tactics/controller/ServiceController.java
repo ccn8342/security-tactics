@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Provides REST endpoitns representating application services with different
+ * Provides REST endpoints representing application services with different
  * intended levels of access.
 */
 @RestController
