@@ -2,6 +2,8 @@ package edu.rit.security_tactics.config;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -42,8 +44,8 @@ class AuthorizationTests {
     }
 
     /**
-     * Verifies that an authenticated user receives HTTP 403 when its role does not
-     * have permission to access a service.
+     * Verifies that an authenticated user is sent to the access-denied page when
+     * its role does not have permission to access a service.
      *
      * @param role the role assigned to the authenticated test user
      * @param service the service URL the role is not allowed to access
@@ -57,6 +59,24 @@ class AuthorizationTests {
     })
     void roleCannotAccessRestrictedService(String role, String service) throws Exception {
         mvc.perform(get(service).with(user("test-user").roles(role)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(forwardedUrl("/access-denied"));
+    }
+
+    /** Verifies that the access-denied page provides navigation and logout links. */
+    @ParameterizedTest
+    @CsvSource({
+            "/api/public, Public service",
+            "/api/user, User service",
+            "/api/manager, Manager service",
+            "/api/admin, Admin service",
+            "/logout, Log out"
+    })
+    void accessDeniedPageProvidesUsefulLinks(String url, String label) throws Exception {
+        mvc.perform(get("/access-denied").with(user("test-user").roles("USER")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                        "href=\"" + url + "\">" + label)));
     }
 }

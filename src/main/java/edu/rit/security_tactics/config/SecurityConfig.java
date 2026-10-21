@@ -40,6 +40,8 @@ public class SecurityConfig {
         .formLogin(form -> form
                 .defaultSuccessUrl("/api/user")
                 .permitAll())
+        .exceptionHandling(exceptions -> exceptions
+                .accessDeniedPage("/access-denied"))
         .logout(Customizer.withDefaults());
 
         return http.build();

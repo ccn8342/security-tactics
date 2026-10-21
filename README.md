@@ -89,6 +89,7 @@ These are public demo credentials. Accounts are recreated at startup and stored 
 | `/api/admin` | Administrators only |
 
 Authorization is enforced by the Spring Security filter chain in `SecurityConfig`. Authenticated users can access `/api/user`, managers and administrators can access `/api/manager`, and only administrators can access `/api/admin`.
+Users who attempt to open a service without the required role are redirected to an access-denied page with service navigation and logout links.
 
 ## Project Structure
 
