@@ -33,7 +33,9 @@ public class SecurityConfig {
         http
         .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/public").permitAll()
-                // Role-specific URL permissions are the next authorization step.
+                .requestMatchers("/api/user").authenticated()
+                .requestMatchers("/api/manager").hasAnyRole("MANAGER", "ADMIN")
+                .requestMatchers("/api/admin").hasRole("ADMIN")
                 .anyRequest().authenticated())
         .formLogin(form -> form
                 .defaultSuccessUrl("/api/user")

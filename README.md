@@ -88,7 +88,7 @@ These are public demo credentials. Accounts are recreated at startup and stored 
 | `/api/manager` | Managers and administrators |
 | `/api/admin` | Administrators only |
 
-**Current implementation:** `/api/public` is accessible without login. All other services require authentication, but role-specific restrictions are not implemented yet. Any logged-in demo user can currently access `/api/user`, `/api/manager`, and `/api/admin`, regardless of the messages those endpoints return. The table above describes the intended permissions for the next authorization step.
+Authorization is enforced by the Spring Security filter chain in `SecurityConfig`. Authenticated users can access `/api/user`, managers and administrators can access `/api/manager`, and only administrators can access `/api/admin`.
 
 ## Project Structure
 
