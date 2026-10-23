@@ -20,7 +20,7 @@ The application provides REST endpoints with different intended access privilege
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/ccn8342/security-tactics.git
 cd security-tactics
 ```
 
@@ -64,6 +64,21 @@ http://localhost:8080
 
 Press Ctrl+C in the terminal to stop the server.
 
+## Demo Login
+
+| Username | Password | Role |
+|---|---|---|
+| `alice` | `AliceDemo123!` | USER |
+| `morgan` | `MorganDemo123!` | MANAGER |
+| `alex` | `AlexDemo123!` | ADMIN |
+
+These are public demo credentials. Accounts are recreated at startup and stored in memory with BCrypt password hashes.
+
+1. Open http://localhost:8080/api/public without logging in.
+2. Open http://localhost:8080/login and sign in with a demo account. A direct login takes you to `/api/user`.
+3. Visit another service listed below. The session keeps you logged in without resubmitting your password.
+4. Open http://localhost:8080/logout and confirm logout. Visiting `/api/user` afterward requires login again.
+
 ## Available Endpoints
 
 | Endpoint | Intended Access |
@@ -73,18 +88,18 @@ Press Ctrl+C in the terminal to stop the server.
 | `/api/manager` | Managers and administrators |
 | `/api/admin` | Administrators only |
 
-**Current implementation:** The endpoints are defined, but custom role-based authorization has not yet been implemented. Spring Security currently requires authentication for all endpoints by default.
+Authorization is enforced by the Spring Security filter chain in `SecurityConfig`. Authenticated users can access `/api/user`, managers and administrators can access `/api/manager`, and only administrators can access `/api/admin`.
+Users who attempt to open a service without the required role are redirected to an access-denied page with service navigation and logout links.
 
 ## Project Structure
 
 ```text
-src/main/java/edu/rit/securitytactics/
+src/main/java/edu/rit/security_tactics/
 ├── SecurityTacticsApplication.java
 ├── controller/
 │   └── ServiceController.java
-├── authentication/
-├── authorization/
 └── config/
+    └── SecurityConfig.java
 ```
 
-The authentication, authorization, and configuration packages will be populated as development progresses.
+`SecurityConfig` defines the demo users, password encoder, and login/logout and basic access configuration.
